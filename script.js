@@ -5,7 +5,19 @@ const btLongo = document.querySelector('.app__card-button--longo');
 const banner = document.querySelector('.app__image');
 const textoTitulo = document.querySelector('.app__title');
 const botoes = document.querySelectorAll('.app__card-button');
+const btPlayPause = document.querySelector('#alternar-musica');
+const audio = new Audio('./sons/luna-rise-part-one.mp3');
+audio.loop = true;
 
+btPlayPause.addEventListener('click', tocaAudio);
+
+function tocaAudio() {
+    if(audio.paused){
+        audio.play();
+    } else {
+        audio.pause();
+    }
+}
 
 btFoco.addEventListener('click', () => {
     alterarContexto('foco');
