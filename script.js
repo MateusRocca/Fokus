@@ -1,23 +1,34 @@
 const html = document.querySelector('html');
+
 const btFoco = document.querySelector('.app__card-button--foco');
 const btCurto = document.querySelector('.app__card-button--curto');
 const btLongo = document.querySelector('.app__card-button--longo');
+const botoes = document.querySelectorAll('.app__card-button');
+const btStartPause = document.querySelector('#start-pause');
+const iniciarOuPausarTexto = document.querySelector('#start-pause span');
+const iniciarOuPausarIcone = document.querySelector('.app__card-primary-butto-icon');
+
 const banner = document.querySelector('.app__image');
 const textoTitulo = document.querySelector('.app__title');
-const botoes = document.querySelectorAll('.app__card-button');
-const btPlayPause = document.querySelector('#alternar-musica');
+
+const musicaFocoInput = document.querySelector('#alternar-musica');
 const audio = new Audio('./sons/luna-rise-part-one.mp3');
 audio.loop = true;
 
-btPlayPause.addEventListener('click', tocaAudio);
+const audioPlay = new Audio('./sons/play.wav');
+const audioPause = new Audio('./sons/pause.mp3');
 
-function tocaAudio() {
-    if(audio.paused){
-        audio.play();
+let tempoDecorridoEmSegundos = 5;
+let intervaloId = null;
+
+
+musicaFocoInput.addEventListener('change', () => {
+    if(audio.played){
+         audio.pause();
     } else {
-        audio.pause();
+        audio.play();
     }
-}
+});
 
 btFoco.addEventListener('click', () => {
     alterarContexto('foco');
@@ -71,3 +82,33 @@ function alterarContexto(contexto) {
   
 }  
 
+const contagemRegressiva = () => {
+    if(tempoDecorridoEmSegundos <= 0){
+        alert('Tempo finalizado!');
+        zerar();
+        return;
+    }
+    tempoDecorridoEmSegundos -= 1;
+    console.log(tempoDecorridoEmSegundos);
+}
+
+btStartPause.addEventListener('click', iniciarOuPausar);
+
+function iniciarOuPausar() {
+    if(intervaloId){
+        audioPause.play();
+        zerar();
+        return;
+    } 
+    audioPlay.play();
+    intervaloId = setInterval(contagemRegressiva, 1000);
+    iniciarOuPausarTexto.textContent = 'Pausar';
+    iniciarOuPausarIcone.setAttribute('src', './imagens/pause.png');
+}
+
+function zerar() {
+    clearInterval(intervaloId);
+    iniciarOuPausarTexto.textContent = 'Começar';
+    iniciarOuPausarIcone.setAttribute('src', './imagens/play_arrow.png');
+    intervaloId = null;
+}
