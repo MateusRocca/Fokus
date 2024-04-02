@@ -20,7 +20,7 @@ const audioPlay = new Audio('./sons/play.wav');
 const audioPause = new Audio('./sons/pause.mp3');
 const audioTempoFinalizado = new Audio('./sons/beep.mp3');
 
-let tempoDecorridoEmSegundos = 5;
+let tempoDecorridoEmSegundos = 1500;
 let intervaloId = null;
 
 
@@ -33,29 +33,31 @@ musicaFocoInput.addEventListener('change', () => {
 });
 
 btFoco.addEventListener('click', () => {
+    tempoDecorridoEmSegundos = 1500;
     alterarContexto('foco');
     btFoco.classList.add('active');
-    
 })
 
 btCurto.addEventListener('click', () => {
+    tempoDecorridoEmSegundos = 300;
     alterarContexto('descanso-curto');
     btCurto.classList.add('active');
-    
 })
 
 btLongo.addEventListener('click', () => {
+    tempoDecorridoEmSegundos = 900;
     alterarContexto('descanso-longo');
     btLongo.classList.add('active');
-    
 })
 
 function alterarContexto(contexto) {
-    html.setAttribute('data-contexto', `${contexto}`);
-    banner.src = `./imagens/${contexto}.png`;
+    mostrarTempo();
     botoes.forEach(function(botao) {
         botao.classList.remove('active');
     })
+    html.setAttribute('data-contexto', `${contexto}`);
+    banner.src = `./imagens/${contexto}.png`;
+    
 
     switch (contexto) {
         case 'foco':
@@ -88,6 +90,11 @@ const contagemRegressiva = () => {
     if(tempoDecorridoEmSegundos <= 0){
         audioTempoFinalizado.play();
         alert('Tempo finalizado!');
+        const focoAtivo = html.getAttribute('data-contexto') == 'foco';
+        if(focoAtivo){
+            const evento = new CustomEvent('FocoFinalizado');
+            document.dispatchEvent(evento);
+        }
         zerar();
         return;
     }
